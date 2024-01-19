@@ -4,24 +4,24 @@ import "./Note.css";
 
 const Note = () => {
   const [inputNote, setInputNote] = useState("");
-  const [note, setNote] = useState([]);
+  const [notes, setNotes] = useState([]);
   const api = "http://localhost:5000";
 
-  //posting note
+  //post note
   const addNote = async (e) => {
     const data = {
       note: inputNote,
     };
     try {
       const response = await axios.post(`${api}/create_note`, data);
-      setNote((prevNote) => [...prevNote, response.data.data]);
+      setNotes((prevNotes) => [...prevNotes, response.data.data]);
       setInputNote("");
     } catch (error) {
       console.log(error);
     }
   };
 
-  //deleting note
+  //delete note
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${api}/delete_note/${id}`);
@@ -34,12 +34,13 @@ const Note = () => {
   //fetching note
   const getData = async () => {
     try {
-      const notesResponse = await axios.get(`${api}/get_note`);
-      setNote(notesResponse.data.data);
+      const Response = await axios.get(`${api}/get_note`);
+      setNotes(Response.data.data);
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     getData();
   }, []);
@@ -53,7 +54,7 @@ const Note = () => {
       />
       <button onClick={addNote}>Create</button>
       <ul>
-        {note.map((i) => (
+        {notes.map((i) => (
           <li key={i.id}>
             <p>{i.message}</p>
             <button onClick={() => handleDelete(i.id)}>Delete</button>
